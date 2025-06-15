@@ -93,7 +93,10 @@ export default function MemoryMatch() {
   }, [cards]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-hidden">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-blue-200 via-pink-100 to-purple-200 opacity-80" />
+
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-bold mb-4">Memory Match</h1>
         <p className="text-xl text-gray-600">Moves: {moves}</p>
@@ -104,17 +107,18 @@ export default function MemoryMatch() {
           <button
             key={card.id}
             onClick={() => handleCardClick(card.id)}
-            className={`w-20 h-20 rounded-lg transform transition-all duration-300 flex items-center justify-center bg-white shadow-md border border-gray-200 ${
-              card.isFlipped || card.isMatched
-                ? ''
-                : 'bg-blue-500 hover:bg-blue-600'
-            }`}
+            className={`w-20 h-20 rounded-xl transform transition-all duration-300 flex items-center justify-center shadow-lg border border-white/40 backdrop-blur-md
+              ${card.isFlipped || card.isMatched
+                ? 'bg-white'
+                : 'bg-gradient-to-br from-white/60 via-purple-100 to-pink-100 hover:from-white/80 hover:to-purple-200'}
+            `}
+            style={{ boxShadow: card.isFlipped || card.isMatched ? '0 4px 24px 0 rgba(80,80,120,0.10)' : '0 4px 24px 0 rgba(120,80,180,0.15)' }}
             disabled={card.isMatched}
           >
             {card.isFlipped || card.isMatched ? (
               <Image src={card.value} alt="tile" width={48} height={48} className="object-contain" />
             ) : (
-              <span className="text-white text-3xl font-bold">?</span>
+              <span className="text-purple-400 text-3xl font-bold drop-shadow">?</span>
             )}
           </button>
         ))}
@@ -136,3 +140,15 @@ export default function MemoryMatch() {
     </div>
   );
 }
+
+/* Add this to your global CSS or tailwind config for animation */
+/*
+@keyframes gradient-move {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-move 8s ease-in-out infinite;
+}
+*/
