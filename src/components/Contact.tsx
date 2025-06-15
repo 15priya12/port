@@ -17,12 +17,6 @@ const Contact = () => {
       y: Math.random() * window.innerHeight,
     }));
     setPositions(newPositions);
-
-    console.log(
-      "SERVICE_ID:", process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-      "TEMPLATE_ID:", process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-      "PUBLIC_KEY:", process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-    );
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
