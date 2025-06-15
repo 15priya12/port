@@ -15,10 +15,10 @@ type Direction = { x: number; y: number };
 export default function SnakeGame() {
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [direction, setDirection] = useState<Direction>(INITIAL_DIRECTION);
-  const [food, setFood] = useState<Position>({ x: 5, y: 5 });
+  const [food, setFood] = useState<Position>(() => ({ x: 5, y: 5 }));
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const gameLoopRef = useRef<NodeJS.Timeout>();
+  const gameLoopRef = useRef<number | null>(null);
   const directionRef = useRef<Direction>(direction);
 
   const generateFood = useCallback(() => {
@@ -112,10 +112,10 @@ export default function SnakeGame() {
       });
     };
 
-    gameLoopRef.current = setInterval(moveSnake, GAME_SPEED);
+    gameLoopRef.current = window.setInterval(moveSnake, GAME_SPEED);
 
     return () => {
-      if (gameLoopRef.current) {
+      if (gameLoopRef.current !== null) {
         clearInterval(gameLoopRef.current);
       }
     };
