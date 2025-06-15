@@ -4,10 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 
-const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
-const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
-const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -21,20 +17,12 @@ const Contact = () => {
     setStatus('sending');
 
     try {
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        message: formData.message,
-        to_email: '15priya12jain@gmail.com',
-      };
-
       const result = await emailjs.sendForm(
-        serviceId,
-        templateId,
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         e.target as HTMLFormElement,
-        publicKey
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
-      
       if (result.text === 'OK') {
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
