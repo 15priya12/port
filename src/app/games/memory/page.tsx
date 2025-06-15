@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 type Card = {
@@ -18,6 +18,7 @@ export default function MemoryMatch() {
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const confettiRef = useRef<HTMLDivElement>(null);
 
   const initializeGame = () => {
     const cardPairs = [...IMAGES, ...IMAGES]
@@ -89,6 +90,13 @@ export default function MemoryMatch() {
   useEffect(() => {
     if (cards.length > 0 && cards.every(card => card.isMatched)) {
       setGameOver(true);
+      if (confettiRef.current) {
+        confettiRef.current.classList.remove('opacity-0');
+        confettiRef.current.classList.add('opacity-100');
+        setTimeout(() => {
+          if (confettiRef.current) confettiRef.current.classList.add('opacity-0');
+        }, 2500);
+      }
     }
   }, [cards]);
 
@@ -125,17 +133,43 @@ export default function MemoryMatch() {
       </div>
 
       {gameOver && (
-        <div className="mt-8 text-center">
-          <h2 className="text-2xl font-bold text-green-600 mb-4">
-            Congratulations! You won in {moves} moves!
-          </h2>
-          <button
-            onClick={initializeGame}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            Play Again
-          </button>
-        </div>
+        <>
+          {/* Confetti Animation */}
+          <div ref={confettiRef} className="pointer-events-none fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-700 opacity-0">
+            {[...Array(40)].map((_, i) => (
+              <span
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 60 + 10}%`,
+                  fontSize: `${Math.random() * 1.5 + 1}rem`,
+                  color: [
+                    '#a78bfa', '#f472b6', '#facc15', '#34d399', '#60a5fa', '#f87171', '#fbbf24', '#38bdf8', '#f472b6', '#a3e635'
+                  ][i % 10],
+                  transform: `rotate(${Math.random() * 360}deg)`
+                }}
+              >
+                {['🎉','✨','🎊','💜','💖','⭐','💎','🎈','🥳','🌈'][i % 10]}
+              </span>
+            ))}
+          </div>
+          {/* Win Modal Popup */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="relative bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl px-10 py-10 max-w-md w-full mx-4 flex flex-col items-center border border-white/40">
+              <h2 className="text-4xl font-extrabold mb-4 bg-gradient-to-r from-purple-500 via-pink-400 to-yellow-400 bg-clip-text text-transparent text-center drop-shadow-lg">
+                🎉 Congratulations! 
+              </h2>
+              <p className="text-lg text-gray-700 mb-8 text-center">You won in <span className="font-bold text-purple-500">{moves}</span> moves!</p>
+              <button
+                onClick={initializeGame}
+                className="px-8 py-3 bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-300 text-white rounded-full font-bold shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 animate-bounce"
+              >
+                <span className="inline-block mr-2">🔄</span> Play Again
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
