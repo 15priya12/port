@@ -9,6 +9,9 @@ const Contact = () => {
   const [positions, setPositions] = useState<Array<{ x: number; y: number }>>([]);
 
   useEffect(() => {
+    // Initialize EmailJS
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+
     const newPositions = Array.from({ length: 15 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
@@ -20,17 +23,18 @@ const Contact = () => {
     e.preventDefault();
     setStatus('sending');
     try {
+      const form = e.target as HTMLFormElement;
       const result = await emailjs.sendForm(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        e.target as HTMLFormElement,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+        form
       );
-      if (result.text === 'OK') {
+      
+      if (result.status === 200) {
         setStatus('success');
-        (e.target as HTMLFormElement).reset();
+        form.reset();
       } else {
-        throw new Error('Failed to send email');
+        throw new Error(result.text || 'Failed to send email');
       }
     } catch (error) {
       console.error('Error sending email:', error);
