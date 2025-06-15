@@ -2,10 +2,12 @@
 
 import { motion, useAnimation } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const controls = useAnimation();
+  const router = useRouter();
 
   const games = [
     {
@@ -45,6 +47,10 @@ const Games = () => {
       }
     });
   }, [controls]);
+
+  const handleGameClick = (gameId: string) => {
+    router.push(`/games/${gameId}`);
+  };
 
   return (
     <section id="games" className="relative min-h-screen bg-gradient-to-b from-white to-gray-50 overflow-hidden py-20">
@@ -101,7 +107,7 @@ const Games = () => {
               
               <div 
                 className="relative p-8 rounded-2xl bg-white border border-gray-100 shadow-lg hover:shadow-xl overflow-hidden cursor-pointer"
-                onClick={() => setActiveGame(game.id)}
+                onClick={() => handleGameClick(game.id)}
               >
                 <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${game.gradient} rounded-full blur-2xl opacity-50`} />
                 
